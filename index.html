@@ -340,8 +340,8 @@
   </div>
 
   <script>
-    // IMPORTANT: Replace with your Apps Script Web App /exec endpoint
-    const ENDPOINT_URL = "PASTE_YOUR_APPS_SCRIPT_EXEC_URL_HERE";
+    // Apps Script Web App /exec endpoint (your Google Sheet receiver)
+    const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbxChaPpu53ml2mJ5YGWO6JaNiqII1hCoMGdfjb6aWK9wyPxZtuBOBa1Pe0mfp9trANsTg/exec";
 
     const STORAGE_CONSENT = "nc.loc.consent";
     const STORAGE_LAST = "nc.loc.last";
@@ -380,10 +380,6 @@
     }
 
     async function requestAndSendLocation() {
-      if (!ENDPOINT_URL || ENDPOINT_URL.includes("PASTE_YOUR")) {
-        modalNote.textContent = "Set ENDPOINT_URL in the code first (Apps Script /exec URL).";
-        return;
-      }
       if (!navigator.geolocation) {
         modalNote.textContent = "Geolocation not supported in this browser.";
         return;
@@ -447,7 +443,7 @@
     });
     btnAllow.addEventListener("click", requestAndSendLocation);
 
-    // On first visit, show modal (still requires user tap to trigger the actual browser prompt)
+    // On first visit, show modal (permission still requires a tap on "Allow location")
     hydrateUI();
     if (!localStorage.getItem(STORAGE_CONSENT)) openModal();
   </script>
