@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Northwind Cart — Delivery near you</title>
+    <meta name="description" content="Demo shop page. Optional: share your location to estimate delivery and pickup." />
+    <style>
+      :root {
+        --bg: #0b1020;
+        --panel: rgba(255, 255, 255, 0.06);
+        --panel2: rgba(255, 255, 255, 0.09);
+        --text: rgba(255, 255, 255, 0.93);
+        --muted: rgba(255, 255, 255, 0.7);
+        --border: rgba(255, 255, 255, 0.12);
+        --accent: #7c5cff;
+        --accent2: #2dd4bf;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        color: var(--text);
+        background:
+          radial-gradient(1200px 500px at 25% 0%, rgba(124,92,255,0.35), transparent 60%),
+          radial-gradient(900px 450px at 90% 20%, rgba(45,212,191,0.25), transparent 55%),
+          var(--bg);
+      }
+      a { color: inherit; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+      code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 18px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .brand { display: flex; align-items: center; gap: 12px; }
+      .logo {
+        width: 40px; height: 40px;
+        border-radius: 12px;
+        display: grid; place-items: center;
+        background: linear-gradient(135deg, rgba(124,92,255,1), rgba(45,212,191,1));
+        color: #06101a;
+        font-weight: 800;
+      }
+      .brandName { font-weight: 750; letter-spacing: 0.2px; }
+      .brandTag { font-size: 12px; color: var(--muted); margin-top: 2px; }
+      .nav { display: flex; gap: 14px; color: var(--muted); font-size: 14px; }
+      .nav a { padding: 8px 10px; border-radius: 10px; }
+      .nav a:hover { background: var(--panel); color: var(--text); text-decoration: none; }
+
+      .main { max-width: 1100px; margin: 0 auto; padding: 0 18px 60px; }
+      .hero {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 18px;
+        align-items: start;
+        padding-top: 10px;
+      }
+      @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
+      h1 { margin: 12px 0 10px; font-size: clamp(28px, 4vw, 44px); line-height: 1.05; }
+      h2 { margin: 0 0 12px; font-size: 22px; }
+      h3 { margin: 0 0 12px; font-size: 18px; }
+      .muted { color: var(--muted); }
+      .small { font-size: 12px; }
+
+      .card {
+        background: linear-gradient(180deg, var(--panel), rgba(255,255,255,0.03));
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      }
+      .consentCard { margin-top: 18px; }
+      .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+      .btn, .btnPrimary {
+        appearance: none;
+        border: 1px solid var(--border);
+        background: var(--panel2);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-weight: 650;
+        cursor: pointer;
+      }
+      .btnPrimary {
+        border-color: rgba(124,92,255,0.55);
+        background: linear-gradient(180deg, rgba(124,92,255,0.35), rgba(124,92,255,0.18));
+      }
+      .btn:disabled, .btnPrimary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+      .status {
+        margin: 12px 0 0;
+        white-space: pre-wrap;
+        background: rgba(0,0,0,0.25);
+        border: 1px solid rgba(255,255,255,0.10);
+        border-radius: 12px;
+        padding: 10px;
+        font-size: 12px;
+        color: rgba(255,255,255,0.86);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+      .product { padding: 12px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.04); }
+      .thumb { height: 58px; border-radius: 12px; background: linear-gradient(135deg, rgba(124,92,255,0.28), rgba(45,212,191,0.22)); border: 1px solid rgba(255,255,255,0.10); }
+      .pName { margin-top: 10px; font-weight: 700; }
+      .pMeta { margin-top: 3px; font-size: 12px; color: var(--muted); }
+
+      .fineprint { margin-top: 12px; font-size: 13px; }
+      .section { margin-top: 22px; }
+      .dealRow { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+      @media (max-width: 900px) { .dealRow { grid-template-columns: 1fr; } }
+      .dealTitle { font-weight: 750; margin-bottom: 6px; }
+      .dealDesc { font-size: 13px; }
+
+      .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+      .chip {
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.04);
+        padding: 8px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+      }
+
+      .footer {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 18px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .warning {
+        border: 1px solid rgba(255, 220, 120, 0.3);
+        background: rgba(255, 220, 120, 0.08);
+        color: rgba(255, 240, 200, 0.95);
+        padding: 10px 12px;
+        border-radius: 14px;
+        font-size: 13px;
+      }
+      .input {
+        width: min(760px, 100%);
+        border: 1px solid rgba(255,255,255,0.14);
+        background: rgba(0,0,0,0.22);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 10px 12px;
+        outline: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <div class="logo">NC</div>
+        <div>
+          <div class="brandName">Northwind Cart</div>
+          <div class="brandTag">Everyday essentials. Fast delivery.</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#deals">Deals</a>
+        <a href="#categories">Categories</a>
+        <a href="#help">Help</a>
+      </nav>
+    </header>
+
+    <main class="main">
+      <section class="hero">
+        <div class="heroLeft">
+          <h1>Shop smarter. Get delivery estimates near you.</h1>
+          <p class="muted">
+            Optional: share your location to estimate delivery and pickup availability.
+            Your browser will show a permission prompt and you can stop sharing anytime.
+          </p>
+
+          <div class="card">
+            <div class="warning">
+              <strong>Important:</strong> this page will only send your location after you tap <em>Use my location</em>
+              and approve the prompt. GitHub Pages cannot store data, so we send it to the endpoint URL you set below.
+            </div>
+
+            <div style="margin-top: 12px;">
+              <div class="small muted">Location receiver endpoint (you control this):</div>
+              <input id="endpoint" class="input" placeholder="https://your-endpoint.example/collect" />
+              <div class="small muted" style="margin-top: 6px;">
+                Tip: Google Apps Script “Web app” URL works well and can store rows in Google Sheets.
+              </div>
+            </div>
+          </div>
+
+          <div class="card consentCard">
+            <div class="row">
+              <button id="btnEnable" class="btnPrimary">Use my location</button>
+              <button id="btnStop" class="btn" disabled>Stop sharing</button>
+              <button id="btnTest" class="btn">Send test ping</button>
+            </div>
+            <div class="small muted">
+              iOS/Safari won’t allow “silent” location. This is opt-in and generally works only while the page is open.
+            </div>
+            <pre id="status" class="status">Status: not sharing</pre>
+          </div>
+        </div>
+
+        <div class="heroRight">
+          <div class="card">
+            <h3>Your local picks</h3>
+            <div class="grid">
+              <div class="product"><div class="thumb"></div><div class="pName">Wireless Earbuds</div><div class="pMeta">$29.99 · Ships today</div></div>
+              <div class="product"><div class="thumb"></div><div class="pName">Power Bank 10k</div><div class="pMeta">$19.99 · Pickup available</div></div>
+              <div class="product"><div class="thumb"></div><div class="pName">Running Shoes</div><div class="pMeta">$49.99 · 2-day delivery</div></div>
+              <div class="product"><div class="thumb"></div><div class="pName">Skincare Bundle</div><div class="pMeta">$24.99 · Limited deal</div></div>
+            </div>
+          </div>
+          <div class="card fineprint">
+            <strong>Privacy note:</strong> if you enable location, this page sends your coordinates to the endpoint you entered.
+          </div>
+        </div>
+      </section>
+
+      <section id="deals" class="section">
+        <h2>Today’s deals</h2>
+        <div class="dealRow">
+          <div class="deal card"><div class="dealTitle">Flash deal</div><div class="dealDesc muted">Extra 10% off accessories in select areas</div></div>
+          <div class="deal card"><div class="dealTitle">Free pickup</div><div class="dealDesc muted">Pickup partners near your area (location optional)</div></div>
+          <div class="deal card"><div class="dealTitle">Fast delivery</div><div class="dealDesc muted">Estimate delivery windows with location sharing</div></div>
+        </div>
+      </section>
+
+      <section id="categories" class="section">
+        <h2>Categories</h2>
+        <div class="chips">
+          <span class="chip">Electronics</span>
+          <span class="chip">Beauty</span>
+          <span class="chip">Home</span>
+          <span class="chip">Fashion</span>
+          <span class="chip">Grocery</span>
+        </div>
+      </section>
+
+      <section id="help" class="section">
+        <h2>Help</h2>
+        <div class="card">
+          <div class="muted">
+            If location is blocked, allow Location for this site in Safari settings and reload. This page can’t (and won’t)
+            bypass iOS permissions.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="muted">© Northwind Cart (demo)</div>
+      <div class="muted">Hosted on GitHub Pages</div>
+    </footer>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+
+      const endpointEl = $("endpoint");
+      const statusEl = $("status");
+      const btnEnable = $("btnEnable");
+      const btnStop = $("btnStop");
+      const btnTest = $("btnTest");
+
+      const STORAGE_KEY = "northwind.endpoint";
+      let watchId = null;
+      let sessionId = null;
+      let lastSentAtMs = 0;
+
+      function setStatus(obj) {
+        statusEl.textContent = typeof obj === "string" ? `Status: ${obj}` : JSON.stringify(obj, null, 2);
+      }
+
+      function getEndpoint() {
+        const url = (endpointEl.value || "").trim();
+        if (!url) throw new Error("Set an endpoint URL first.");
+        return url;
+      }
+
+      function loadEndpoint() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) endpointEl.value = saved;
+      }
+
+      endpointEl.addEventListener("change", () => {
+        localStorage.setItem(STORAGE_KEY, endpointEl.value.trim());
+      });
+
+      function getOrCreateSessionId() {
+        if (sessionId) return sessionId;
+        sessionId = (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(16).slice(2));
+        return sessionId;
+      }
+
+      async function postJson(url, payload) {
+        // CORS note: your endpoint must allow requests from your GitHub Pages origin.
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(await res.text());
+      }
+
+      async function sendLocation(pos, reason) {
+        const now = Date.now();
+        // Throttle to at most one send per 15s to avoid flooding your endpoint.
+        if (reason !== "manual" && now - lastSentAtMs < 15000) return;
+        lastSentAtMs = now;
+
+        const payload = {
+          type: "location",
+          reason,
+          sentAt: new Date().toISOString(),
+          sessionId: getOrCreateSessionId(),
+          coords: {
+            latitude: pos.coords.latitude,
+            longitude: pos.coords.longitude,
+            accuracyMeters: pos.coords.accuracy
+          },
+          userAgent: navigator.userAgent,
+          pageUrl: location.href
+        };
+
+        const endpoint = getEndpoint();
+        await postJson(endpoint, payload);
+        setStatus({ sharing: true, ...payload });
+      }
+
+      function startSharing() {
+        try {
+          getEndpoint();
+        } catch (e) {
+          setStatus(e.message);
+          return;
+        }
+
+        if (!("geolocation" in navigator)) {
+          setStatus("Geolocation not supported in this browser.");
+          return;
+        }
+
+        btnEnable.disabled = true;
+        btnStop.disabled = false;
+        setStatus("Requesting permission… (approve the browser prompt)");
+
+        watchId = navigator.geolocation.watchPosition(
+          async (pos) => {
+            try {
+              await sendLocation(pos, "watch");
+            } catch (e) {
+              setStatus("Error sending location: " + e.message);
+            }
+          },
+          (err) => {
+            setStatus("Location error: " + err.message);
+            stopSharing();
+          },
+          { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
+        );
+      }
+
+      function stopSharing() {
+        if (watchId != null && "geolocation" in navigator) navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+        btnEnable.disabled = false;
+        btnStop.disabled = true;
+        setStatus("not sharing");
+      }
+
+      async function sendTestPing() {
+        try {
+          const endpoint = getEndpoint();
+          const payload = {
+            type: "test",
+            sentAt: new Date().toISOString(),
+            sessionId: getOrCreateSessionId(),
+            userAgent: navigator.userAgent,
+            pageUrl: location.href
+          };
+          await postJson(endpoint, payload);
+          setStatus({ ok: true, ...payload });
+        } catch (e) {
+          setStatus("Test ping failed: " + e.message);
+        }
+      }
+
+      btnEnable.addEventListener("click", startSharing);
+      btnStop.addEventListener("click", stopSharing);
+      btnTest.addEventListener("click", sendTestPing);
+
+      loadEndpoint();
+      setStatus("not sharing");
+    </script>
+  </body>
+</html>
+
