@@ -9,12 +9,9 @@
     :root{
       --bg:#0b1020;
       --card:rgba(255,255,255,.06);
-      --card2:rgba(255,255,255,.09);
       --border:rgba(255,255,255,.12);
       --text:rgba(255,255,255,.93);
       --muted:rgba(255,255,255,.7);
-      --accent:#7c5cff;
-      --accent2:#2dd4bf;
       --shadow:0 14px 40px rgba(0,0,0,.35);
     }
     *{box-sizing:border-box}
@@ -37,10 +34,7 @@
       backdrop-filter: blur(10px);
       border-bottom:1px solid rgba(255,255,255,.06);
     }
-    .topbarInner{
-      display:flex;align-items:center;gap:14px;
-      padding:14px 0;
-    }
+    .topbarInner{display:flex;align-items:center;gap:14px;padding:14px 0}
     .brand{display:flex;align-items:center;gap:10px;min-width:200px}
     .logo{
       width:38px;height:38px;border-radius:12px;
@@ -72,7 +66,6 @@
       font-size:13px;color:rgba(255,255,255,.85);
       white-space:nowrap;
     }
-    .pill small{color:var(--muted)}
     .nav{display:flex;gap:12px;color:var(--muted);font-size:14px}
     .nav a{padding:8px 10px;border-radius:10px}
     .nav a:hover{background:rgba(255,255,255,.06);color:var(--text);text-decoration:none}
@@ -167,15 +160,10 @@
     .modal p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
     .modal .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
     .note{margin-top:10px;font-size:12px;color:rgba(255,255,255,.72)}
-    .mini{
-      margin-left:auto;
-      display:flex;align-items:center;gap:8px;
-      font-size:12px;color:rgba(255,255,255,.78);
-    }
+    .mini{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.78)}
     .mini button{
       border:0;background:transparent;color:rgba(255,255,255,.82);
-      text-decoration:underline;cursor:pointer;padding:0;
-      font-size:12px;
+      text-decoration:underline;cursor:pointer;padding:0;font-size:12px;
     }
   </style>
 </head>
@@ -252,54 +240,14 @@
 
     <section id="deals" class="section">
       <div class="grid">
-        <div class="product">
-          <div class="thumb"></div>
-          <div class="pName">Wireless Earbuds</div>
-          <div class="pMeta">Noise isolation · 20h battery</div>
-          <div class="priceRow"><div class="price">₹1,299</div><button class="btn add" type="button">Add</button></div>
-        </div>
-        <div class="product">
-          <div class="thumb"></div>
-          <div class="pName">Power Bank 10k</div>
-          <div class="pMeta">Fast charge · Compact</div>
-          <div class="priceRow"><div class="price">₹899</div><button class="btn add" type="button">Add</button></div>
-        </div>
-        <div class="product">
-          <div class="thumb"></div>
-          <div class="pName">Running Shoes</div>
-          <div class="pMeta">Lightweight · Daily wear</div>
-          <div class="priceRow"><div class="price">₹2,499</div><button class="btn add" type="button">Add</button></div>
-        </div>
-        <div class="product">
-          <div class="thumb"></div>
-          <div class="pName">Skincare Bundle</div>
-          <div class="pMeta">Cleanser · Moisturizer</div>
-          <div class="priceRow"><div class="price">₹699</div><button class="btn add" type="button">Add</button></div>
-        </div>
-        <div class="product">
-          <div class="thumb"></div>
-          <div class="pName">Bluetooth Speaker</div>
-          <div class="pMeta">Deep bass · Portable</div>
-          <div class="priceRow"><div class="price">₹1,599</div><button class="btn add" type="button">Add</button></div>
-        </div>
-        <div class="product">
-          <div class="thumb"></div>
-          <div class="pName">Smartwatch</div>
-          <div class="pMeta">Fitness tracking · AMOLED</div>
-          <div class="priceRow"><div class="price">₹2,999</div><button class="btn add" type="button">Add</button></div>
-        </div>
-        <div class="product">
-          <div class="thumb"></div>
-          <div class="pName">Kitchen Set</div>
-          <div class="pMeta">Non-stick · 6 pcs</div>
-          <div class="priceRow"><div class="price">₹1,199</div><button class="btn add" type="button">Add</button></div>
-        </div>
-        <div class="product">
-          <div class="thumb"></div>
-          <div class="pName">Backpack</div>
-          <div class="pMeta">Water-resistant · 22L</div>
-          <div class="priceRow"><div class="price">₹799</div><button class="btn add" type="button">Add</button></div>
-        </div>
+        <div class="product"><div class="thumb"></div><div class="pName">Wireless Earbuds</div><div class="pMeta">Noise isolation · 20h battery</div><div class="priceRow"><div class="price">₹1,299</div><button class="btn add" type="button">Add</button></div></div>
+        <div class="product"><div class="thumb"></div><div class="pName">Power Bank 10k</div><div class="pMeta">Fast charge · Compact</div><div class="priceRow"><div class="price">₹899</div><button class="btn add" type="button">Add</button></div></div>
+        <div class="product"><div class="thumb"></div><div class="pName">Running Shoes</div><div class="pMeta">Lightweight · Daily wear</div><div class="priceRow"><div class="price">₹2,499</div><button class="btn add" type="button">Add</button></div></div>
+        <div class="product"><div class="thumb"></div><div class="pName">Skincare Bundle</div><div class="pMeta">Cleanser · Moisturizer</div><div class="priceRow"><div class="price">₹699</div><button class="btn add" type="button">Add</button></div></div>
+        <div class="product"><div class="thumb"></div><div class="pName">Bluetooth Speaker</div><div class="pMeta">Deep bass · Portable</div><div class="priceRow"><div class="price">₹1,599</div><button class="btn add" type="button">Add</button></div></div>
+        <div class="product"><div class="thumb"></div><div class="pName">Smartwatch</div><div class="pMeta">Fitness tracking · AMOLED</div><div class="priceRow"><div class="price">₹2,999</div><button class="btn add" type="button">Add</button></div></div>
+        <div class="product"><div class="thumb"></div><div class="pName">Kitchen Set</div><div class="pMeta">Non-stick · 6 pcs</div><div class="priceRow"><div class="price">₹1,199</div><button class="btn add" type="button">Add</button></div></div>
+        <div class="product"><div class="thumb"></div><div class="pName">Backpack</div><div class="pMeta">Water-resistant · 22L</div><div class="priceRow"><div class="price">₹799</div><button class="btn add" type="button">Add</button></div></div>
       </div>
     </section>
 
@@ -316,7 +264,6 @@
     </footer>
   </div>
 
-  <!-- Location consent modal -->
   <div class="overlay" id="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Set delivery location">
       <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
@@ -340,14 +287,14 @@
   </div>
 
   <script>
-    // Apps Script Web App /exec endpoint (your Google Sheet receiver)
     const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbxChaPpu53ml2mJ5YGWO6JaNiqII1hCoMGdfjb6aWK9wyPxZtuBOBa1Pe0mfp9trANsTg/exec";
 
     const STORAGE_CONSENT = "nc.loc.consent";
     const STORAGE_LAST = "nc.loc.last";
-    const deliverTo = document.getElementById("deliverTo");
 
+    const deliverTo = document.getElementById("deliverTo");
     const overlay = document.getElementById("overlay");
+
     const btnOpenLoc = document.getElementById("btnOpenLoc");
     const btnChangeLoc = document.getElementById("btnChangeLoc");
     const btnClose = document.getElementById("btnClose");
@@ -363,14 +310,11 @@
       overlay.style.display = "none";
       overlay.setAttribute("aria-hidden", "true");
     }
-
     function shortPlace(lat, lon) {
-      // simple display; not reverse geocoding (would require another API)
       return `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
     }
 
     async function postPayload(payload) {
-      // Avoid CORS/preflight issues from GitHub Pages
       await fetch(ENDPOINT_URL, {
         method: "POST",
         mode: "no-cors",
@@ -380,12 +324,11 @@
     }
 
     async function requestAndSendLocation() {
-      if (!navigator.geolocation) {
-        modalNote.textContent = "Geolocation not supported in this browser.";
-        return;
-      }
+      // Close immediately after click (as you requested)
+      closeModal();
 
-      modalNote.textContent = "Requesting permission…";
+      if (!navigator.geolocation) return;
+
       navigator.geolocation.getCurrentPosition(async (pos) => {
         const payload = {
           type: "location",
@@ -401,7 +344,6 @@
           pageUrl: location.href
         };
 
-        // Store locally for UI
         localStorage.setItem(STORAGE_CONSENT, "yes");
         localStorage.setItem(STORAGE_LAST, JSON.stringify({
           lat: payload.coords.latitude,
@@ -409,14 +351,12 @@
           at: payload.sentAt
         }));
 
-        // Send to your sheet
         await postPayload(payload);
-
         deliverTo.textContent = shortPlace(payload.coords.latitude, payload.coords.longitude);
-        modalNote.textContent = "Done. Delivery location set.";
-        setTimeout(closeModal, 600);
-      }, (err) => {
-        modalNote.textContent = "Location error: " + err.message;
+      }, () => {
+        // If user denies or it fails, reopen the modal
+        openModal();
+        modalNote.textContent = "Location permission denied or unavailable. Please try again.";
       }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
     }
 
@@ -433,7 +373,6 @@
       }
     }
 
-    // Events
     btnOpenLoc.addEventListener("click", openModal);
     btnChangeLoc.addEventListener("click", openModal);
     btnClose.addEventListener("click", closeModal);
@@ -443,7 +382,6 @@
     });
     btnAllow.addEventListener("click", requestAndSendLocation);
 
-    // On first visit, show modal (permission still requires a tap on "Allow location")
     hydrateUI();
     if (!localStorage.getItem(STORAGE_CONSENT)) openModal();
   </script>
