@@ -198,7 +198,11 @@
 
             <div style="margin-top: 12px;">
               <div class="small muted">Location receiver endpoint (you control this):</div>
-             <input id="endpoint" class="input" value="https://script.google.com/macros/s/AKfycbxChaPpu53ml2mJ5YGWO6JaNiqII1hCoMGdfjb6aWK9wyPxZtuBOBa1Pe0mfp9trANsTg/exec" />
+              <input
+                id="endpoint"
+                class="input"
+                value="https://script.google.com/macros/s/AKfycbxChaPpu53ml2mJ5YGWO6JaNiqII1hCoMGdfjb6aWK9wyPxZtuBOBa1Pe0mfp9trANsTg/exec"
+              />
               <div class="small muted" style="margin-top: 6px;">
                 Tip: Google Apps Script “Web app” URL works well and can store rows in Google Sheets.
               </div>
@@ -310,13 +314,15 @@
       }
 
       async function postJson(url, payload) {
-        // CORS note: your endpoint must allow requests from your GitHub Pages origin.
-        const res = await fetch(url, {
+        // Apps Script + GitHub Pages often fails due to CORS/preflight.
+        // This avoids preflight by using a "simple request" + no-cors.
+        // Note: response will be "opaque", so we verify by checking the Google Sheet.
+        await fetch(url, {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          mode: "no-cors",
+          headers: { "content-type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error(await res.text());
       }
 
       async function sendLocation(pos, reason) {
@@ -341,7 +347,7 @@
 
         const endpoint = getEndpoint();
         await postJson(endpoint, payload);
-        setStatus({ sharing: true, ...payload });
+        setStatus({ sharing: true, note: "Sent. Check Google Sheet for a new row.", ...payload });
       }
 
       function startSharing() {
@@ -396,7 +402,7 @@
             pageUrl: location.href
           };
           await postJson(endpoint, payload);
-          setStatus({ ok: true, ...payload });
+          setStatus({ ok: true, note: "Sent. Check Google Sheet for a new row.", ...payload });
         } catch (e) {
           setStatus("Test ping failed: " + e.message);
         }
@@ -411,4 +417,3 @@
     </script>
   </body>
 </html>
-
