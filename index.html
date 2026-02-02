@@ -3,284 +3,442 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Northwind Cart - Shop Online</title>
-  <meta name="description" content="Shop online with fast delivery estimates." />
+  <title>Birthday Shop - Celebrate & Shop</title>
+  <meta name="description" content="Your special day, special deals!" />
   <style>
     :root{
-      --bg:#0b1020;
-      --card:rgba(255,255,255,.06);
-      --border:rgba(255,255,255,.12);
-      --text:rgba(255,255,255,.93);
+      --bg:#1a0d2e;
+      --card:rgba(255,255,255,.08);
+      --border:rgba(255,255,255,.15);
+      --text:#fff;
       --muted:rgba(255,255,255,.7);
-      --accent:#7c5cff;
-      --accent2:#2dd4bf;
-      --shadow:0 14px 40px rgba(0,0,0,.35);
-      --shadow-hover:0 20px 60px rgba(0,0,0,.5);
+      --pink:#ff6b9d;
+      --purple:#c44569;
+      --yellow:#feca57;
+      --blue:#48dbfb;
+      --green:#1dd1a1;
+      --shadow:0 10px 40px rgba(0,0,0,.4);
     }
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color:var(--text);
       background:
-        radial-gradient(1200px 520px at 25% 0%, rgba(124,92,255,.35), transparent 60%),
-        radial-gradient(900px 450px at 90% 20%, rgba(45,212,191,.25), transparent 55%),
-        var(--bg);
+        radial-gradient(circle at 20% 50%, rgba(255,107,157,.3), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(72,219,251,.25), transparent 50%),
+        radial-gradient(circle at 40% 20%, rgba(254,202,87,.2), transparent 50%),
+        linear-gradient(135deg, #1a0d2e 0%, #2d1b3d 100%);
+      min-height:100vh;
+      position:relative;
+      overflow-x:hidden;
     }
-    a{color:inherit;text-decoration:none}
-    a:hover{text-decoration:underline}
+    /* Confetti animation */
+    .confetti{position:fixed;width:10px;height:10px;background:var(--pink);top:-10px;opacity:0;animation:fall linear infinite;z-index:1;pointer-events:none}
+    @keyframes fall{
+      to{transform:translateY(100vh) rotate(360deg);opacity:1}
+    }
     
-    /* Birthday Banner */
-    .birthdayBanner{
-      position:fixed;top:0;left:0;right:0;z-index:100;
-      background:linear-gradient(135deg, rgba(124,92,255,.95), rgba(45,212,191,.95));
-      backdrop-filter:blur(10px);
-      padding:14px 18px;
+    /* Birthday Card Overlay */
+    .birthdayCard{
+      position:fixed;inset:0;z-index:200;
+      background:rgba(0,0,0,.85);
+      display:none;align-items:center;justify-content:center;
+      padding:20px;
+      animation:fadeIn .3s;
+    }
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .cardInner{
+      background:linear-gradient(135deg, #ff6b9d, #c44569, #feca57);
+      border-radius:24px;
+      padding:40px;
+      max-width:500px;
+      width:100%;
       text-align:center;
-      color:#fff;
-      font-weight:700;
-      box-shadow:0 4px 20px rgba(0,0,0,.3);
-      animation:slideDown .4s ease-out;
+      box-shadow:0 20px 60px rgba(0,0,0,.5);
+      position:relative;
+      overflow:hidden;
+      animation:cardPop .5s ease-out;
     }
-    @keyframes slideDown{
-      from{transform:translateY(-100%);opacity:0}
-      to{transform:translateY(0);opacity:1}
+    @keyframes cardPop{
+      0%{transform:scale(0.8);opacity:0}
+      50%{transform:scale(1.05)}
+      100%{transform:scale(1);opacity:1}
     }
-    .birthdayBanner .close{float:right;background:transparent;border:0;color:#fff;cursor:pointer;font-size:20px;line-height:1}
-    .birthdayBanner strong{display:block;font-size:18px;margin-bottom:4px}
-    .birthdayBanner .code{display:inline-block;background:rgba(0,0,0,.2);padding:6px 12px;border-radius:8px;margin-top:6px;font-family:monospace;letter-spacing:1px}
+    .cardInner::before{
+      content:'🎉';position:absolute;font-size:60px;opacity:.2;
+      top:-20px;right:-20px;animation:float 3s ease-in-out infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .userPhoto{
+      width:120px;height:120px;border-radius:50%;
+      border:5px solid #fff;
+      object-fit:cover;
+      margin:0 auto 20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.3);
+      animation:photoPop .6s ease-out .2s both;
+    }
+    @keyframes photoPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+    .cardTitle{font-size:32px;font-weight:900;margin-bottom:10px;color:#fff;text-shadow:2px 2px 4px rgba(0,0,0,.2)}
+    .cardMessage{font-size:18px;color:#fff;margin-bottom:20px;line-height:1.6}
+    .cardCode{
+      background:rgba(255,255,255,.2);backdrop-filter:blur(10px);
+      padding:12px 24px;border-radius:12px;
+      font-size:20px;font-weight:700;color:#fff;
+      display:inline-block;margin-top:10px;
+      border:2px solid rgba(255,255,255,.3);
+    }
+    .cardClose{
+      position:absolute;top:15px;right:15px;
+      background:rgba(255,255,255,.2);border:0;
+      color:#fff;width:35px;height:35px;
+      border-radius:50%;cursor:pointer;font-size:20px;
+      transition:all .2s;
+    }
+    .cardClose:hover{background:rgba(255,255,255,.3);transform:scale(1.1)}
     
-    .wrap{max-width:1150px;margin:0 auto;padding:0 18px}
+    .wrap{max-width:1200px;margin:0 auto;padding:0 20px;position:relative;z-index:10}
     .topbar{
-      position:sticky;top:0;z-index:50;
-      background:rgba(11,16,32,.65);
-      backdrop-filter: blur(10px);
-      border-bottom:1px solid rgba(255,255,255,.06);
+      position:sticky;top:0;z-index:100;
+      background:rgba(26,13,46,.85);
+      backdrop-filter:blur(15px);
+      border-bottom:2px solid rgba(255,107,157,.3);
+      box-shadow:0 4px 20px rgba(0,0,0,.3);
     }
-    .topbarInner{display:flex;align-items:center;gap:14px;padding:14px 0}
-    .brand{display:flex;align-items:center;gap:10px;min-width:200px}
+    .topbarInner{
+      display:flex;align-items:center;gap:16px;padding:16px 0;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;
+      font-size:24px;font-weight:900;
+      background:linear-gradient(135deg, var(--pink), var(--yellow));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
     .logo{
-      width:38px;height:38px;border-radius:12px;
+      width:45px;height:45px;border-radius:12px;
+      background:linear-gradient(135deg, var(--pink), var(--purple));
       display:grid;place-items:center;
-      background:linear-gradient(135deg, rgba(124,92,255,1), rgba(45,212,191,1));
-      color:#06101a;font-weight:900;
-      transition:transform .2s;
+      font-size:24px;color:#fff;
+      box-shadow:0 4px 15px rgba(255,107,157,.4);
     }
-    .logo:hover{transform:scale(1.05)}
-    .brandText{line-height:1.1}
-    .brandText .name{font-weight:850;letter-spacing:.2px}
-    .brandText .tag{font-size:12px;color:var(--muted)}
     .search{
-      flex:1;
+      flex:1;min-width:200px;
       display:flex;gap:10px;align-items:center;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.22);
-      border-radius:14px;
-      padding:10px 12px;
-      transition:border-color .2s,box-shadow .2s;
+      border:2px solid rgba(255,255,255,.2);
+      background:rgba(255,255,255,.1);
+      border-radius:25px;padding:12px 18px;
+      transition:all .3s;
     }
-    .search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.1)}
+    .search:focus-within{
+      border-color:var(--pink);
+      box-shadow:0 0 0 4px rgba(255,107,157,.2);
+      background:rgba(255,255,255,.15);
+    }
     .search input{
-      width:100%;border:0;outline:none;background:transparent;
-      color:var(--text);font-size:14px;
+      width:100%;border:0;outline:none;
+      background:transparent;color:var(--text);
+      font-size:15px;
     }
     .pill{
       display:flex;align-items:center;gap:8px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      border-radius:999px;
-      padding:8px 10px;
-      font-size:13px;color:rgba(255,255,255,.85);
+      border:2px solid rgba(255,255,255,.2);
+      background:rgba(255,255,255,.1);
+      border-radius:25px;padding:10px 16px;
+      font-size:14px;color:var(--text);
       white-space:nowrap;
     }
-    .nav{display:flex;gap:12px;color:var(--muted);font-size:14px}
-    .nav a{padding:8px 10px;border-radius:10px;transition:all .2s}
-    .nav a:hover{background:rgba(255,255,255,.06);color:var(--text);text-decoration:none}
+    .nav{
+      display:flex;gap:10px;color:var(--muted);
+      font-size:14px;
+    }
+    .nav a{
+      padding:10px 14px;border-radius:12px;
+      transition:all .2s;
+    }
+    .nav a:hover{
+      background:rgba(255,107,157,.2);
+      color:var(--text);text-decoration:none;
+    }
     
-    .hero{padding:22px 0 10px}
-    .heroGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-    @media (max-width: 960px){.heroGrid{grid-template-columns:1fr}}
-    .card{
-      background:linear-gradient(180deg, var(--card), rgba(255,255,255,.03));
-      border:1px solid var(--border);
-      border-radius:18px;
-      box-shadow: var(--shadow);
-      transition:transform .2s,box-shadow .2s;
+    .hero{
+      padding:40px 0 30px;
+      text-align:center;
     }
-    .card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
-    .heroLeft{padding:18px}
-    h1{margin:0 0 10px;font-size:clamp(26px,3.6vw,44px);line-height:1.05}
-    .muted{color:var(--muted)}
-    .ctaRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-    .btn, .btnPrimary{
+    .hero h1{
+      font-size:clamp(32px,5vw,56px);
+      font-weight:900;
+      margin-bottom:16px;
+      background:linear-gradient(135deg, var(--pink), var(--yellow), var(--blue));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      line-height:1.2;
+    }
+    .hero p{
+      font-size:18px;color:var(--muted);
+      margin-bottom:24px;
+    }
+    .ctaRow{
+      display:flex;gap:12px;justify-content:center;
+      flex-wrap:wrap;
+    }
+    .btn,.btnPrimary{
       appearance:none;cursor:pointer;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.07);
-      color:var(--text);
-      padding:10px 12px;
-      font-weight:750;
-      transition:all .2s;
+      border-radius:25px;border:2px solid transparent;
+      padding:14px 28px;font-weight:700;
+      font-size:16px;transition:all .3s;
     }
-    .btn:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
+    .btn{
+      background:rgba(255,255,255,.1);
+      color:var(--text);border-color:rgba(255,255,255,.2);
+    }
+    .btn:hover{
+      background:rgba(255,255,255,.2);
+      transform:translateY(-2px);
+      box-shadow:0 8px 20px rgba(0,0,0,.3);
+    }
     .btnPrimary{
-      border-color: rgba(124,92,255,.55);
-      background:linear-gradient(180deg, rgba(124,92,255,.35), rgba(124,92,255,.18));
+      background:linear-gradient(135deg, var(--pink), var(--purple));
+      color:#fff;border:0;
+      box-shadow:0 4px 15px rgba(255,107,157,.4);
     }
-    .btnPrimary:hover{background:linear-gradient(180deg, rgba(124,92,255,.45), rgba(124,92,255,.28));transform:translateY(-1px)}
-    .heroRight{padding:16px}
-    .banner{
-      height:160px;border-radius:16px;
-      background:
-        linear-gradient(135deg, rgba(124,92,255,.24), rgba(45,212,191,.18)),
-        radial-gradient(900px 260px at 20% 30%, rgba(255,255,255,.10), transparent 55%);
-      border:1px solid rgba(255,255,255,.10);
-      padding:16px;
-      display:flex;flex-direction:column;justify-content:space-between;
-      position:relative;overflow:hidden;
+    .btnPrimary:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 25px rgba(255,107,157,.6);
     }
-    .banner::before{
-      content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;
-      background:radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%);
-      animation:rotate 20s linear infinite;
+    
+    .section{padding:30px 0}
+    .sectionTitle{
+      font-size:28px;font-weight:800;
+      margin-bottom:20px;
+      background:linear-gradient(135deg, var(--pink), var(--yellow));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
     }
-    @keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-    .banner > *{position:relative;z-index:1}
-    .banner .kicker{font-size:12px;color:rgba(255,255,255,.78);font-weight:700;letter-spacing:.4px;text-transform:uppercase}
-    .banner .headline{font-size:18px;font-weight:850}
-    .banner .sub{font-size:13px;color:var(--muted)}
-    .section{padding:16px 0}
-    .chips{display:flex;flex-wrap:wrap;gap:10px}
+    .chips{
+      display:flex;flex-wrap:wrap;gap:12px;
+      justify-content:center;
+    }
     .chip{
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      padding:8px 10px;border-radius:999px;
-      font-size:13px;
-      transition:all .2s;
-      cursor:pointer;
+      border:2px solid rgba(255,255,255,.2);
+      background:rgba(255,255,255,.1);
+      padding:12px 20px;border-radius:25px;
+      font-size:14px;font-weight:600;
+      transition:all .3s;cursor:pointer;
     }
-    .chip:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
+    .chip:hover{
+      background:linear-gradient(135deg, var(--pink), var(--purple));
+      border-color:transparent;
+      transform:translateY(-2px);
+      box-shadow:0 6px 20px rgba(255,107,157,.4);
+    }
+    
     .grid{
       display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:12px;
+      grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+      gap:20px;
     }
-    @media (max-width: 1050px){.grid{grid-template-columns:repeat(3,1fr)}}
-    @media (max-width: 760px){.grid{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width: 430px){.grid{grid-template-columns:1fr}}
     .product{
-      padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.10);
-      background:rgba(255,255,255,.04);
-      transition:all .3s;
-      cursor:pointer;
-    }
-    .product:hover{
       background:rgba(255,255,255,.08);
-      transform:translateY(-4px);
-      box-shadow:0 8px 24px rgba(0,0,0,.3);
+      border:2px solid rgba(255,255,255,.15);
+      border-radius:20px;padding:16px;
+      transition:all .3s;cursor:pointer;
+      position:relative;overflow:hidden;
+    }
+    .product::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg, rgba(255,107,157,.1), rgba(72,219,251,.1));
+      opacity:0;transition:opacity .3s;
+    }
+    .product:hover::before{opacity:1}
+    .product:hover{
+      transform:translateY(-8px);
+      border-color:var(--pink);
+      box-shadow:0 15px 40px rgba(255,107,157,.3);
     }
     .thumb{
-      height:110px;border-radius:14px;border:1px solid rgba(255,255,255,.10);
-      background:linear-gradient(135deg, rgba(124,92,255,.22), rgba(45,212,191,.18));
-      position:relative;overflow:hidden;
+      width:100%;height:200px;border-radius:16px;
+      background:linear-gradient(135deg, rgba(255,107,157,.2), rgba(72,219,251,.2));
+      margin-bottom:12px;overflow:hidden;
+      position:relative;
+    }
+    .thumb img{
+      width:100%;height:100%;object-fit:cover;
       transition:transform .3s;
     }
-    .product:hover .thumb{transform:scale(1.05)}
-    .thumb::after{
-      content:'';position:absolute;inset:0;
-      background:linear-gradient(45deg, transparent 30%, rgba(255,255,255,.1) 50%, transparent 70%);
-      transform:translateX(-100%);
-      transition:transform .6s;
+    .product:hover .thumb img{transform:scale(1.1)}
+    .pName{
+      font-size:16px;font-weight:700;margin-bottom:6px;
+      color:var(--text);
     }
-    .product:hover .thumb::after{transform:translateX(100%)}
-    .pName{margin-top:10px;font-weight:850;transition:color .2s}
-    .product:hover .pName{color:var(--accent)}
-    .pMeta{margin-top:4px;font-size:12px;color:var(--muted)}
-    .priceRow{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-    .price{font-weight:900;font-size:18px;color:var(--accent2)}
+    .pMeta{
+      font-size:13px;color:var(--muted);
+      margin-bottom:12px;
+    }
+    .priceRow{
+      display:flex;justify-content:space-between;
+      align-items:center;
+    }
+    .price{
+      font-size:22px;font-weight:900;
+      background:linear-gradient(135deg, var(--yellow), var(--green));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+    }
     .add{
-      font-size:12px;padding:8px 10px;border-radius:12px;
+      padding:8px 16px;border-radius:20px;
+      background:rgba(255,107,157,.2);
+      border:2px solid var(--pink);
+      color:var(--text);font-weight:600;
+      font-size:13px;cursor:pointer;
       transition:all .2s;
     }
-    .add:hover{background:var(--accent);color:#fff;transform:scale(1.05)}
+    .add:hover{
+      background:var(--pink);
+      color:#fff;transform:scale(1.05);
+    }
     
     .footer{
-      border-top:1px solid rgba(255,255,255,.08);
-      color:var(--muted);
-      font-size:13px;
-      padding:18px 0 28px;
-      margin-top:8px;
+      border-top:2px solid rgba(255,255,255,.1);
+      padding:30px 0;text-align:center;
+      color:var(--muted);font-size:14px;
+      margin-top:40px;
     }
     
-    /* Modal */
+    /* Modals */
     .overlay{
-      position:fixed;inset:0;z-index:100;
-      background:rgba(0,0,0,.55);
+      position:fixed;inset:0;z-index:150;
+      background:rgba(0,0,0,.7);
       display:none;align-items:center;justify-content:center;
-      padding:18px;
+      padding:20px;backdrop-filter:blur(5px);
       animation:fadeIn .2s;
     }
-    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     .modal{
-      width:min(560px,100%);
-      border-radius:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow: 0 20px 70px rgba(0,0,0,.6);
-      padding:16px;
+      width:min(500px,100%);
+      border-radius:24px;
+      background:linear-gradient(135deg, rgba(255,107,157,.15), rgba(196,69,105,.15));
+      border:2px solid rgba(255,255,255,.2);
+      box-shadow:0 20px 60px rgba(0,0,0,.5);
+      padding:24px;
       animation:slideUp .3s ease-out;
     }
-    @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-    .modal h2{margin:6px 0 6px;font-size:18px}
-    .modal p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
-    .modal .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .note{margin-top:10px;font-size:12px;color:rgba(255,255,255,.72)}
-    .mini{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.78)}
-    .mini button{
-      border:0;background:transparent;color:rgba(255,255,255,.82);
-      text-decoration:underline;cursor:pointer;padding:0;font-size:12px;
+    @keyframes slideUp{
+      from{transform:translateY(30px);opacity:0}
+      to{transform:translateY(0);opacity:1}
     }
-    .input{width:100%;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);color:var(--text);border-radius:12px;padding:10px 12px;outline:none;margin-top:8px}
-    .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.1)}
+    .modal h2{
+      font-size:22px;font-weight:800;margin-bottom:10px;
+      color:var(--text);
+    }
+    .modal p{
+      color:var(--muted);font-size:14px;
+      line-height:1.6;margin-bottom:16px;
+    }
+    .modal .row{
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin-top:16px;
+    }
+    .note{
+      margin-top:12px;font-size:12px;
+      color:rgba(255,255,255,.8);
+    }
+    .input{
+      width:100%;border:2px solid rgba(255,255,255,.2);
+      background:rgba(255,255,255,.1);
+      color:var(--text);border-radius:12px;
+      padding:12px;outline:none;
+      margin-top:8px;font-size:14px;
+      transition:all .2s;
+    }
+    .input:focus{
+      border-color:var(--pink);
+      box-shadow:0 0 0 4px rgba(255,107,157,.2);
+      background:rgba(255,255,255,.15);
+    }
+    .photoUpload{
+      text-align:center;margin:16px 0;
+    }
+    .photoPreview{
+      width:100px;height:100px;border-radius:50%;
+      border:3px solid var(--pink);
+      object-fit:cover;margin:0 auto 12px;
+      display:none;
+    }
+    .uploadBtn{
+      display:inline-block;padding:10px 20px;
+      background:rgba(255,107,157,.2);
+      border:2px dashed var(--pink);
+      border-radius:12px;color:var(--text);
+      cursor:pointer;transition:all .2s;
+    }
+    .uploadBtn:hover{
+      background:rgba(255,107,157,.3);
+    }
+    .mini{
+      margin-left:auto;font-size:12px;
+      color:rgba(255,255,255,.8);
+    }
+    .mini button{
+      border:0;background:transparent;
+      color:rgba(255,255,255,.9);
+      text-decoration:underline;cursor:pointer;
+      padding:0;font-size:12px;
+    }
+    
+    @media (max-width: 768px){
+      .topbarInner{flex-direction:column;align-items:stretch}
+      .search{width:100%}
+      .grid{grid-template-columns:repeat(2,1fr);gap:12px}
+    }
+    @media (max-width: 480px){
+      .grid{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
-  <!-- Birthday Banner (shown only on birthday) -->
-  <div id="birthdayBanner" class="birthdayBanner" style="display:none">
-    <button class="close" onclick="this.parentElement.style.display='none'">×</button>
-    <strong>🎉 Happy Birthday! 🎉</strong>
-    <div>Enjoy a special 20% discount on your order!</div>
-    <div class="code">BIRTHDAY20</div>
+  <!-- Confetti -->
+  <div id="confettiContainer"></div>
+  
+  <!-- Birthday Card (shown on birthday) -->
+  <div class="birthdayCard" id="birthdayCard">
+    <div class="cardInner">
+      <button class="cardClose" onclick="closeBirthdayCard()">×</button>
+      <img id="userPhotoDisplay" class="userPhoto" src="" alt="Your photo" style="display:none" />
+      <div class="cardTitle">🎉 Happy Birthday! 🎉</div>
+      <div class="cardMessage" id="cardMessage">Wishing you a wonderful day filled with joy and happiness!</div>
+      <div style="margin-top:20px">
+        <div style="font-size:16px;color:#fff;margin-bottom:8px">Special Birthday Discount:</div>
+        <div class="cardCode">BIRTHDAY20</div>
+      </div>
+    </div>
   </div>
 
   <div class="topbar" id="topbar">
     <div class="wrap">
       <div class="topbarInner">
         <div class="brand">
-          <div class="logo">NC</div>
-          <div class="brandText">
-            <div class="name">Northwind Cart</div>
-            <div class="tag">Everyday essentials. Fast delivery.</div>
-          </div>
+          <div class="logo">🎂</div>
+          <div>Birthday Shop</div>
         </div>
-
-        <div class="search" role="search" aria-label="Search products">
-          <span style="color:rgba(255,255,255,.65)">🔍</span>
-          <input placeholder="Search for products, brands and more" />
+        <div class="search" role="search">
+          <span>🔍</span>
+          <input placeholder="Search for birthday gifts..." />
         </div>
-
         <div class="pill" title="Delivery location">
           <span>📍 Deliver to</span>
           <strong id="deliverTo">Choose</strong>
           <span class="mini"><button id="btnChangeLoc" type="button">Change</button></span>
         </div>
-
         <div class="nav">
-          <a href="#deals">Deals</a>
+          <a href="#products">Products</a>
           <a href="#categories">Categories</a>
-          <a href="#help">Help</a>
-          <a href="#" id="btnBirthday" style="position:relative">🎂</a>
+          <a href="#" id="btnBirthday">🎂 My Birthday</a>
         </div>
       </div>
     </div>
@@ -288,111 +446,86 @@
 
   <div class="wrap">
     <section class="hero">
-      <div class="heroGrid">
-        <div class="card heroLeft">
-          <h1>Shop smarter. Get delivery estimates near you.</h1>
-          <div class="muted">
-            To show delivery times and pickup availability, we may ask to use your device location.
-            You can choose "Not now".
-          </div>
-          <div class="ctaRow">
-            <button class="btnPrimary" type="button" id="btnOpenLoc">Set delivery location</button>
-            <button class="btn" type="button">Browse deals</button>
-          </div>
-        </div>
-
-        <div class="card heroRight">
-          <div class="banner">
-            <div class="kicker">Today only</div>
-            <div>
-              <div class="headline">Extra 10% off accessories</div>
-              <div class="sub">Limited-time offers on select items.</div>
-            </div>
-            <div class="sub">Fast checkout · Easy returns</div>
-          </div>
-        </div>
+      <h1>Celebrate Your Special Day! 🎉</h1>
+      <p>Find the perfect gifts and enjoy exclusive birthday deals</p>
+      <div class="ctaRow">
+        <button class="btnPrimary" type="button" id="btnOpenLoc">Set delivery location</button>
+        <button class="btn" type="button" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">Shop Now</button>
       </div>
     </section>
 
     <section id="categories" class="section">
+      <h2 class="sectionTitle">Shop by Category</h2>
       <div class="chips">
-        <span class="chip">📱 Mobiles</span>
-        <span class="chip">💻 Electronics</span>
+        <span class="chip">🎁 Gifts</span>
+        <span class="chip">🎈 Party Supplies</span>
+        <span class="chip">🍰 Cakes</span>
+        <span class="chip">🎂 Decorations</span>
+        <span class="chip">🎁 Electronics</span>
         <span class="chip">👕 Fashion</span>
-        <span class="chip">💄 Beauty</span>
-        <span class="chip">🏠 Home</span>
-        <span class="chip">🛒 Grocery</span>
       </div>
     </section>
 
-    <section id="deals" class="section">
-      <h2 style="margin-bottom:16px;font-size:24px">Featured Products</h2>
+    <section id="products" class="section">
+      <h2 class="sectionTitle">Featured Birthday Products</h2>
       <div class="grid">
         <div class="product">
-          <div class="thumb"></div>
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop" alt="Wireless Earbuds" /></div>
           <div class="pName">Wireless Earbuds</div>
-          <div class="pMeta">Noise isolation · 20h battery</div>
-          <div class="priceRow"><div class="price">₹1,299</div><button class="btn add" type="button">Add</button></div>
+          <div class="pMeta">Premium sound · 20h battery</div>
+          <div class="priceRow"><div class="price">₹1,299</div><button class="add" type="button">Add</button></div>
         </div>
         <div class="product">
-          <div class="thumb"></div>
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=400&h=400&fit=crop" alt="Power Bank" /></div>
           <div class="pName">Power Bank 10k</div>
-          <div class="pMeta">Fast charge · Compact</div>
-          <div class="priceRow"><div class="price">₹899</div><button class="btn add" type="button">Add</button></div>
+          <div class="pMeta">Fast charge · Compact design</div>
+          <div class="priceRow"><div class="price">₹899</div><button class="add" type="button">Add</button></div>
         </div>
         <div class="product">
-          <div class="thumb"></div>
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop" alt="Running Shoes" /></div>
           <div class="pName">Running Shoes</div>
-          <div class="pMeta">Lightweight · Daily wear</div>
-          <div class="priceRow"><div class="price">₹2,499</div><button class="btn add" type="button">Add</button></div>
+          <div class="pMeta">Lightweight · Comfortable</div>
+          <div class="priceRow"><div class="price">₹2,499</div><button class="add" type="button">Add</button></div>
         </div>
         <div class="product">
-          <div class="thumb"></div>
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop" alt="Skincare Bundle" /></div>
           <div class="pName">Skincare Bundle</div>
-          <div class="pMeta">Cleanser · Moisturizer</div>
-          <div class="priceRow"><div class="price">₹699</div><button class="btn add" type="button">Add</button></div>
+          <div class="pMeta">Complete care set</div>
+          <div class="priceRow"><div class="price">₹699</div><button class="add" type="button">Add</button></div>
         </div>
         <div class="product">
-          <div class="thumb"></div>
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop" alt="Bluetooth Speaker" /></div>
           <div class="pName">Bluetooth Speaker</div>
           <div class="pMeta">Deep bass · Portable</div>
-          <div class="priceRow"><div class="price">₹1,599</div><button class="btn add" type="button">Add</button></div>
+          <div class="priceRow"><div class="price">₹1,599</div><button class="add" type="button">Add</button></div>
         </div>
         <div class="product">
-          <div class="thumb"></div>
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop" alt="Smartwatch" /></div>
           <div class="pName">Smartwatch</div>
           <div class="pMeta">Fitness tracking · AMOLED</div>
-          <div class="priceRow"><div class="price">₹2,999</div><button class="btn add" type="button">Add</button></div>
+          <div class="priceRow"><div class="price">₹2,999</div><button class="add" type="button">Add</button></div>
         </div>
         <div class="product">
-          <div class="thumb"></div>
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=400&h=400&fit=crop" alt="Kitchen Set" /></div>
           <div class="pName">Kitchen Set</div>
-          <div class="pMeta">Non-stick · 6 pcs</div>
-          <div class="priceRow"><div class="price">₹1,199</div><button class="btn add" type="button">Add</button></div>
+          <div class="pMeta">Non-stick · 6 pieces</div>
+          <div class="priceRow"><div class="price">₹1,199</div><button class="add" type="button">Add</button></div>
         </div>
         <div class="product">
-          <div class="thumb"></div>
+          <div class="thumb"><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop" alt="Backpack" /></div>
           <div class="pName">Backpack</div>
           <div class="pMeta">Water-resistant · 22L</div>
-          <div class="priceRow"><div class="price">₹799</div><button class="btn add" type="button">Add</button></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="help" class="section">
-      <div class="card" style="padding:14px">
-        <div class="muted" style="font-size:13px">
-          If location is blocked, allow Location permissions for this site in your browser settings and reload.
+          <div class="priceRow"><div class="price">₹799</div><button class="add" type="button">Add</button></div>
         </div>
       </div>
     </section>
 
     <footer class="footer">
-      <div>© Northwind Cart (demo) · Hosted on GitHub Pages</div>
+      <div>© Birthday Shop (demo) · Hosted on GitHub Pages</div>
     </footer>
   </div>
 
-  <!-- Location Consent Modal -->
+  <!-- Location Consent Modal (UNCHANGED) -->
   <div class="overlay" id="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Set delivery location">
       <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
@@ -413,21 +546,26 @@
     </div>
   </div>
 
-  <!-- Birthday Modal -->
+  <!-- Birthday Setup Modal -->
   <div class="overlay" id="birthdayOverlay" aria-hidden="true" style="display:none">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Set your birthday">
       <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
         <div>
-          <h2>🎂 When's your birthday?</h2>
-          <p>We'll send you a special discount on your special day!</p>
+          <h2>🎂 Set Your Birthday</h2>
+          <p>Upload your photo and set your birthday to get a special surprise on your special day!</p>
         </div>
         <button class="btn" id="btnCloseBirthday" type="button" aria-label="Close">Close</button>
       </div>
-      <div style="margin-top:12px">
-        <label style="font-size:13px;color:var(--muted)">Birthday (MM/DD)</label>
+      <div class="photoUpload">
+        <img id="photoPreview" class="photoPreview" alt="Your photo" />
+        <label for="photoInput" class="uploadBtn">📷 Upload Your Photo</label>
+        <input type="file" id="photoInput" accept="image/*" style="display:none" />
+      </div>
+      <div style="margin-top:16px">
+        <label style="font-size:14px;color:var(--muted);display:block;margin-bottom:8px">Birthday (MM/DD)</label>
         <input type="date" id="birthdayInput" class="input" />
       </div>
-      <div class="row" style="margin-top:12px">
+      <div class="row">
         <button class="btnPrimary" id="btnSaveBirthday" type="button">Save</button>
         <button class="btn" id="btnCancelBirthday" type="button">Cancel</button>
       </div>
@@ -441,11 +579,13 @@
     const STORAGE_CONSENT = "nc.loc.consent";
     const STORAGE_LAST = "nc.loc.last";
     const STORAGE_BIRTHDAY = "nc.birthday";
+    const STORAGE_PHOTO = "nc.photo";
 
     const deliverTo = document.getElementById("deliverTo");
     const overlay = document.getElementById("overlay");
     const birthdayOverlay = document.getElementById("birthdayOverlay");
-    const birthdayBanner = document.getElementById("birthdayBanner");
+    const birthdayCard = document.getElementById("birthdayCard");
+    const userPhotoDisplay = document.getElementById("userPhotoDisplay");
     const topbar = document.getElementById("topbar");
 
     const btnOpenLoc = document.getElementById("btnOpenLoc");
@@ -460,8 +600,27 @@
     const btnSaveBirthday = document.getElementById("btnSaveBirthday");
     const btnCancelBirthday = document.getElementById("btnCancelBirthday");
     const birthdayInput = document.getElementById("birthdayInput");
+    const photoInput = document.getElementById("photoInput");
+    const photoPreview = document.getElementById("photoPreview");
     const birthdayNote = document.getElementById("birthdayNote");
+    const cardMessage = document.getElementById("cardMessage");
 
+    // Confetti effect
+    function createConfetti() {
+      const colors = ['#ff6b9d', '#c44569', '#feca57', '#48dbfb', '#1dd1a1'];
+      const container = document.getElementById('confettiContainer');
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 3 + 's';
+        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        container.appendChild(confetti);
+      }
+    }
+
+    // Location functions (UNCHANGED)
     function openModal() {
       overlay.style.display = "flex";
       overlay.setAttribute("aria-hidden", "false");
@@ -470,20 +629,9 @@
       overlay.style.display = "none";
       overlay.setAttribute("aria-hidden", "true");
     }
-    function openBirthdayModal() {
-      birthdayOverlay.style.display = "flex";
-      birthdayOverlay.setAttribute("aria-hidden", "false");
-      const saved = localStorage.getItem(STORAGE_BIRTHDAY);
-      if (saved) birthdayInput.value = saved;
-    }
-    function closeBirthdayModal() {
-      birthdayOverlay.style.display = "none";
-      birthdayOverlay.setAttribute("aria-hidden", "true");
-    }
     function shortPlace(lat, lon) {
       return `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
     }
-
     async function postPayload(payload) {
       await fetch(ENDPOINT_URL, {
         method: "POST",
@@ -492,11 +640,9 @@
         body: JSON.stringify(payload)
       });
     }
-
     async function requestAndSendLocation() {
       closeModal();
       if (!navigator.geolocation) return;
-
       navigator.geolocation.getCurrentPosition(async (pos) => {
         const payload = {
           type: "location",
@@ -511,14 +657,12 @@
           userAgent: navigator.userAgent,
           pageUrl: location.href
         };
-
         localStorage.setItem(STORAGE_CONSENT, "yes");
         localStorage.setItem(STORAGE_LAST, JSON.stringify({
           lat: payload.coords.latitude,
           lon: payload.coords.longitude,
           at: payload.sentAt
         }));
-
         await postPayload(payload);
         deliverTo.textContent = shortPlace(payload.coords.latitude, payload.coords.longitude);
       }, () => {
@@ -526,6 +670,61 @@
         modalNote.textContent = "Location permission denied or unavailable. Please try again.";
       }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
     }
+
+    // Birthday functions
+    function openBirthdayModal() {
+      birthdayOverlay.style.display = "flex";
+      birthdayOverlay.setAttribute("aria-hidden", "false");
+      const saved = localStorage.getItem(STORAGE_BIRTHDAY);
+      if (saved) birthdayInput.value = saved;
+      const savedPhoto = localStorage.getItem(STORAGE_PHOTO);
+      if (savedPhoto) {
+        photoPreview.src = savedPhoto;
+        photoPreview.style.display = "block";
+      }
+    }
+    function closeBirthdayModal() {
+      birthdayOverlay.style.display = "none";
+      birthdayOverlay.setAttribute("aria-hidden", "true");
+    }
+    function closeBirthdayCard() {
+      birthdayCard.style.display = "none";
+      createConfetti();
+    }
+    function checkBirthday() {
+      const birthday = localStorage.getItem(STORAGE_BIRTHDAY);
+      const photo = localStorage.getItem(STORAGE_PHOTO);
+      if (birthday) {
+        const [year, month, day] = birthday.split('-').map(Number);
+        const today = new Date();
+        const todayMonth = today.getMonth() + 1;
+        const todayDay = today.getDate();
+        if (month === todayMonth && day === todayDay) {
+          birthdayCard.style.display = "flex";
+          if (photo) {
+            userPhotoDisplay.src = photo;
+            userPhotoDisplay.style.display = "block";
+            cardMessage.textContent = "Happy Birthday! We hope your special day is filled with joy, laughter, and wonderful moments!";
+          }
+          createConfetti();
+        }
+      }
+    }
+
+    // Photo upload
+    photoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const photoData = event.target.result;
+          photoPreview.src = photoData;
+          photoPreview.style.display = "block";
+          localStorage.setItem(STORAGE_PHOTO, photoData);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
 
     function hydrateUI() {
       try {
@@ -538,21 +737,10 @@
       } catch {
         deliverTo.textContent = "Choose";
       }
-
-      // Check birthday
-      const birthday = localStorage.getItem(STORAGE_BIRTHDAY);
-      if (birthday) {
-        const [year, month, day] = birthday.split('-').map(Number);
-        const today = new Date();
-        const todayMonth = today.getMonth() + 1;
-        const todayDay = today.getDate();
-        if (month === todayMonth && day === todayDay) {
-          birthdayBanner.style.display = "block";
-          topbar.style.marginTop = "50px";
-        }
-      }
+      checkBirthday();
     }
 
+    // Event listeners
     btnOpenLoc.addEventListener("click", openModal);
     btnChangeLoc.addEventListener("click", openModal);
     btnClose.addEventListener("click", closeModal);
@@ -575,8 +763,11 @@
         return;
       }
       localStorage.setItem(STORAGE_BIRTHDAY, val);
-      birthdayNote.textContent = "Saved! We'll remember your special day.";
-      setTimeout(closeBirthdayModal, 1000);
+      birthdayNote.textContent = "Saved! We'll remember your special day. 🎉";
+      setTimeout(() => {
+        closeBirthdayModal();
+        checkBirthday();
+      }, 1000);
     });
 
     hydrateUI();
