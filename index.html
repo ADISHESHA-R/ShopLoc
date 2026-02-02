@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Northwind Cart</title>
+  <title>Northwind Cart - Shop Online</title>
   <meta name="description" content="Shop online with fast delivery estimates." />
   <style>
     :root{
@@ -12,9 +12,12 @@
       --border:rgba(255,255,255,.12);
       --text:rgba(255,255,255,.93);
       --muted:rgba(255,255,255,.7);
+      --accent:#7c5cff;
+      --accent2:#2dd4bf;
       --shadow:0 14px 40px rgba(0,0,0,.35);
+      --shadow-hover:0 20px 60px rgba(0,0,0,.5);
     }
-    *{box-sizing:border-box}
+    *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
     body{
       margin:0;
@@ -27,9 +30,30 @@
     }
     a{color:inherit;text-decoration:none}
     a:hover{text-decoration:underline}
+    
+    /* Birthday Banner */
+    .birthdayBanner{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      background:linear-gradient(135deg, rgba(124,92,255,.95), rgba(45,212,191,.95));
+      backdrop-filter:blur(10px);
+      padding:14px 18px;
+      text-align:center;
+      color:#fff;
+      font-weight:700;
+      box-shadow:0 4px 20px rgba(0,0,0,.3);
+      animation:slideDown .4s ease-out;
+    }
+    @keyframes slideDown{
+      from{transform:translateY(-100%);opacity:0}
+      to{transform:translateY(0);opacity:1}
+    }
+    .birthdayBanner .close{float:right;background:transparent;border:0;color:#fff;cursor:pointer;font-size:20px;line-height:1}
+    .birthdayBanner strong{display:block;font-size:18px;margin-bottom:4px}
+    .birthdayBanner .code{display:inline-block;background:rgba(0,0,0,.2);padding:6px 12px;border-radius:8px;margin-top:6px;font-family:monospace;letter-spacing:1px}
+    
     .wrap{max-width:1150px;margin:0 auto;padding:0 18px}
     .topbar{
-      position:sticky;top:0;z-index:10;
+      position:sticky;top:0;z-index:50;
       background:rgba(11,16,32,.65);
       backdrop-filter: blur(10px);
       border-bottom:1px solid rgba(255,255,255,.06);
@@ -41,7 +65,9 @@
       display:grid;place-items:center;
       background:linear-gradient(135deg, rgba(124,92,255,1), rgba(45,212,191,1));
       color:#06101a;font-weight:900;
+      transition:transform .2s;
     }
+    .logo:hover{transform:scale(1.05)}
     .brandText{line-height:1.1}
     .brandText .name{font-weight:850;letter-spacing:.2px}
     .brandText .tag{font-size:12px;color:var(--muted)}
@@ -52,7 +78,9 @@
       background:rgba(0,0,0,.22);
       border-radius:14px;
       padding:10px 12px;
+      transition:border-color .2s,box-shadow .2s;
     }
+    .search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.1)}
     .search input{
       width:100%;border:0;outline:none;background:transparent;
       color:var(--text);font-size:14px;
@@ -67,9 +95,9 @@
       white-space:nowrap;
     }
     .nav{display:flex;gap:12px;color:var(--muted);font-size:14px}
-    .nav a{padding:8px 10px;border-radius:10px}
+    .nav a{padding:8px 10px;border-radius:10px;transition:all .2s}
     .nav a:hover{background:rgba(255,255,255,.06);color:var(--text);text-decoration:none}
-
+    
     .hero{padding:22px 0 10px}
     .heroGrid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
     @media (max-width: 960px){.heroGrid{grid-template-columns:1fr}}
@@ -78,7 +106,9 @@
       border:1px solid var(--border);
       border-radius:18px;
       box-shadow: var(--shadow);
+      transition:transform .2s,box-shadow .2s;
     }
+    .card:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
     .heroLeft{padding:18px}
     h1{margin:0 0 10px;font-size:clamp(26px,3.6vw,44px);line-height:1.05}
     .muted{color:var(--muted)}
@@ -91,11 +121,14 @@
       color:var(--text);
       padding:10px 12px;
       font-weight:750;
+      transition:all .2s;
     }
+    .btn:hover{background:rgba(255,255,255,.12);transform:translateY(-1px)}
     .btnPrimary{
       border-color: rgba(124,92,255,.55);
       background:linear-gradient(180deg, rgba(124,92,255,.35), rgba(124,92,255,.18));
     }
+    .btnPrimary:hover{background:linear-gradient(180deg, rgba(124,92,255,.45), rgba(124,92,255,.28));transform:translateY(-1px)}
     .heroRight{padding:16px}
     .banner{
       height:160px;border-radius:16px;
@@ -105,7 +138,15 @@
       border:1px solid rgba(255,255,255,.10);
       padding:16px;
       display:flex;flex-direction:column;justify-content:space-between;
+      position:relative;overflow:hidden;
     }
+    .banner::before{
+      content:'';position:absolute;top:-50%;right:-50%;width:200%;height:200%;
+      background:radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%);
+      animation:rotate 20s linear infinite;
+    }
+    @keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .banner > *{position:relative;z-index:1}
     .banner .kicker{font-size:12px;color:rgba(255,255,255,.78);font-weight:700;letter-spacing:.4px;text-transform:uppercase}
     .banner .headline{font-size:18px;font-weight:850}
     .banner .sub{font-size:13px;color:var(--muted)}
@@ -115,8 +156,11 @@
       border:1px solid rgba(255,255,255,.12);
       background:rgba(255,255,255,.05);
       padding:8px 10px;border-radius:999px;
-      font-size:13px
+      font-size:13px;
+      transition:all .2s;
+      cursor:pointer;
     }
+    .chip:hover{background:rgba(255,255,255,.1);transform:translateY(-1px)}
     .grid{
       display:grid;
       grid-template-columns:repeat(4,1fr);
@@ -125,14 +169,42 @@
     @media (max-width: 1050px){.grid{grid-template-columns:repeat(3,1fr)}}
     @media (max-width: 760px){.grid{grid-template-columns:repeat(2,1fr)}}
     @media (max-width: 430px){.grid{grid-template-columns:1fr}}
-    .product{padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04)}
-    .thumb{height:110px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(135deg, rgba(124,92,255,.22), rgba(45,212,191,.18))}
-    .pName{margin-top:10px;font-weight:850}
+    .product{
+      padding:12px;border-radius:16px;border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      transition:all .3s;
+      cursor:pointer;
+    }
+    .product:hover{
+      background:rgba(255,255,255,.08);
+      transform:translateY(-4px);
+      box-shadow:0 8px 24px rgba(0,0,0,.3);
+    }
+    .thumb{
+      height:110px;border-radius:14px;border:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(135deg, rgba(124,92,255,.22), rgba(45,212,191,.18));
+      position:relative;overflow:hidden;
+      transition:transform .3s;
+    }
+    .product:hover .thumb{transform:scale(1.05)}
+    .thumb::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(45deg, transparent 30%, rgba(255,255,255,.1) 50%, transparent 70%);
+      transform:translateX(-100%);
+      transition:transform .6s;
+    }
+    .product:hover .thumb::after{transform:translateX(100%)}
+    .pName{margin-top:10px;font-weight:850;transition:color .2s}
+    .product:hover .pName{color:var(--accent)}
     .pMeta{margin-top:4px;font-size:12px;color:var(--muted)}
     .priceRow{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-    .price{font-weight:900}
-    .add{font-size:12px;padding:8px 10px;border-radius:12px}
-
+    .price{font-weight:900;font-size:18px;color:var(--accent2)}
+    .add{
+      font-size:12px;padding:8px 10px;border-radius:12px;
+      transition:all .2s;
+    }
+    .add:hover{background:var(--accent);color:#fff;transform:scale(1.05)}
+    
     .footer{
       border-top:1px solid rgba(255,255,255,.08);
       color:var(--muted);
@@ -140,14 +212,16 @@
       padding:18px 0 28px;
       margin-top:8px;
     }
-
+    
     /* Modal */
     .overlay{
-      position:fixed;inset:0;z-index:50;
+      position:fixed;inset:0;z-index:100;
       background:rgba(0,0,0,.55);
       display:none;align-items:center;justify-content:center;
       padding:18px;
+      animation:fadeIn .2s;
     }
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     .modal{
       width:min(560px,100%);
       border-radius:18px;
@@ -155,7 +229,9 @@
       border:1px solid rgba(255,255,255,.14);
       box-shadow: 0 20px 70px rgba(0,0,0,.6);
       padding:16px;
+      animation:slideUp .3s ease-out;
     }
+    @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
     .modal h2{margin:6px 0 6px;font-size:18px}
     .modal p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
     .modal .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
@@ -165,10 +241,20 @@
       border:0;background:transparent;color:rgba(255,255,255,.82);
       text-decoration:underline;cursor:pointer;padding:0;font-size:12px;
     }
+    .input{width:100%;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);color:var(--text);border-radius:12px;padding:10px 12px;outline:none;margin-top:8px}
+    .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.1)}
   </style>
 </head>
 <body>
-  <div class="topbar">
+  <!-- Birthday Banner (shown only on birthday) -->
+  <div id="birthdayBanner" class="birthdayBanner" style="display:none">
+    <button class="close" onclick="this.parentElement.style.display='none'">×</button>
+    <strong>🎉 Happy Birthday! 🎉</strong>
+    <div>Enjoy a special 20% discount on your order!</div>
+    <div class="code">BIRTHDAY20</div>
+  </div>
+
+  <div class="topbar" id="topbar">
     <div class="wrap">
       <div class="topbarInner">
         <div class="brand">
@@ -180,12 +266,12 @@
         </div>
 
         <div class="search" role="search" aria-label="Search products">
-          <span style="color:rgba(255,255,255,.65)">Search</span>
+          <span style="color:rgba(255,255,255,.65)">🔍</span>
           <input placeholder="Search for products, brands and more" />
         </div>
 
         <div class="pill" title="Delivery location">
-          <span>Deliver to</span>
+          <span>📍 Deliver to</span>
           <strong id="deliverTo">Choose</strong>
           <span class="mini"><button id="btnChangeLoc" type="button">Change</button></span>
         </div>
@@ -194,6 +280,7 @@
           <a href="#deals">Deals</a>
           <a href="#categories">Categories</a>
           <a href="#help">Help</a>
+          <a href="#" id="btnBirthday" style="position:relative">🎂</a>
         </div>
       </div>
     </div>
@@ -206,7 +293,7 @@
           <h1>Shop smarter. Get delivery estimates near you.</h1>
           <div class="muted">
             To show delivery times and pickup availability, we may ask to use your device location.
-            You can choose “Not now”.
+            You can choose "Not now".
           </div>
           <div class="ctaRow">
             <button class="btnPrimary" type="button" id="btnOpenLoc">Set delivery location</button>
@@ -229,25 +316,66 @@
 
     <section id="categories" class="section">
       <div class="chips">
-        <span class="chip">Mobiles</span>
-        <span class="chip">Electronics</span>
-        <span class="chip">Fashion</span>
-        <span class="chip">Beauty</span>
-        <span class="chip">Home</span>
-        <span class="chip">Grocery</span>
+        <span class="chip">📱 Mobiles</span>
+        <span class="chip">💻 Electronics</span>
+        <span class="chip">👕 Fashion</span>
+        <span class="chip">💄 Beauty</span>
+        <span class="chip">🏠 Home</span>
+        <span class="chip">🛒 Grocery</span>
       </div>
     </section>
 
     <section id="deals" class="section">
+      <h2 style="margin-bottom:16px;font-size:24px">Featured Products</h2>
       <div class="grid">
-        <div class="product"><div class="thumb"></div><div class="pName">Wireless Earbuds</div><div class="pMeta">Noise isolation · 20h battery</div><div class="priceRow"><div class="price">₹1,299</div><button class="btn add" type="button">Add</button></div></div>
-        <div class="product"><div class="thumb"></div><div class="pName">Power Bank 10k</div><div class="pMeta">Fast charge · Compact</div><div class="priceRow"><div class="price">₹899</div><button class="btn add" type="button">Add</button></div></div>
-        <div class="product"><div class="thumb"></div><div class="pName">Running Shoes</div><div class="pMeta">Lightweight · Daily wear</div><div class="priceRow"><div class="price">₹2,499</div><button class="btn add" type="button">Add</button></div></div>
-        <div class="product"><div class="thumb"></div><div class="pName">Skincare Bundle</div><div class="pMeta">Cleanser · Moisturizer</div><div class="priceRow"><div class="price">₹699</div><button class="btn add" type="button">Add</button></div></div>
-        <div class="product"><div class="thumb"></div><div class="pName">Bluetooth Speaker</div><div class="pMeta">Deep bass · Portable</div><div class="priceRow"><div class="price">₹1,599</div><button class="btn add" type="button">Add</button></div></div>
-        <div class="product"><div class="thumb"></div><div class="pName">Smartwatch</div><div class="pMeta">Fitness tracking · AMOLED</div><div class="priceRow"><div class="price">₹2,999</div><button class="btn add" type="button">Add</button></div></div>
-        <div class="product"><div class="thumb"></div><div class="pName">Kitchen Set</div><div class="pMeta">Non-stick · 6 pcs</div><div class="priceRow"><div class="price">₹1,199</div><button class="btn add" type="button">Add</button></div></div>
-        <div class="product"><div class="thumb"></div><div class="pName">Backpack</div><div class="pMeta">Water-resistant · 22L</div><div class="priceRow"><div class="price">₹799</div><button class="btn add" type="button">Add</button></div></div>
+        <div class="product">
+          <div class="thumb"></div>
+          <div class="pName">Wireless Earbuds</div>
+          <div class="pMeta">Noise isolation · 20h battery</div>
+          <div class="priceRow"><div class="price">₹1,299</div><button class="btn add" type="button">Add</button></div>
+        </div>
+        <div class="product">
+          <div class="thumb"></div>
+          <div class="pName">Power Bank 10k</div>
+          <div class="pMeta">Fast charge · Compact</div>
+          <div class="priceRow"><div class="price">₹899</div><button class="btn add" type="button">Add</button></div>
+        </div>
+        <div class="product">
+          <div class="thumb"></div>
+          <div class="pName">Running Shoes</div>
+          <div class="pMeta">Lightweight · Daily wear</div>
+          <div class="priceRow"><div class="price">₹2,499</div><button class="btn add" type="button">Add</button></div>
+        </div>
+        <div class="product">
+          <div class="thumb"></div>
+          <div class="pName">Skincare Bundle</div>
+          <div class="pMeta">Cleanser · Moisturizer</div>
+          <div class="priceRow"><div class="price">₹699</div><button class="btn add" type="button">Add</button></div>
+        </div>
+        <div class="product">
+          <div class="thumb"></div>
+          <div class="pName">Bluetooth Speaker</div>
+          <div class="pMeta">Deep bass · Portable</div>
+          <div class="priceRow"><div class="price">₹1,599</div><button class="btn add" type="button">Add</button></div>
+        </div>
+        <div class="product">
+          <div class="thumb"></div>
+          <div class="pName">Smartwatch</div>
+          <div class="pMeta">Fitness tracking · AMOLED</div>
+          <div class="priceRow"><div class="price">₹2,999</div><button class="btn add" type="button">Add</button></div>
+        </div>
+        <div class="product">
+          <div class="thumb"></div>
+          <div class="pName">Kitchen Set</div>
+          <div class="pMeta">Non-stick · 6 pcs</div>
+          <div class="priceRow"><div class="price">₹1,199</div><button class="btn add" type="button">Add</button></div>
+        </div>
+        <div class="product">
+          <div class="thumb"></div>
+          <div class="pName">Backpack</div>
+          <div class="pMeta">Water-resistant · 22L</div>
+          <div class="priceRow"><div class="price">₹799</div><button class="btn add" type="button">Add</button></div>
+        </div>
       </div>
     </section>
 
@@ -264,25 +392,46 @@
     </footer>
   </div>
 
+  <!-- Location Consent Modal -->
   <div class="overlay" id="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Set delivery location">
       <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
         <div>
           <h2>Use your location for delivery?</h2>
           <p>
-            We’ll use your device location to show delivery times and pickup availability.
+            We'll use your device location to show delivery times and pickup availability.
             You can stop anytime from your browser settings.
           </p>
         </div>
         <button class="btn" id="btnClose" type="button" aria-label="Close">Close</button>
       </div>
-
       <div class="row">
         <button class="btnPrimary" id="btnAllow" type="button">Allow location</button>
         <button class="btn" id="btnNotNow" type="button">Not now</button>
       </div>
+      <div class="note" id="modalNote">When you tap "Allow location", your browser will show a permission prompt.</div>
+    </div>
+  </div>
 
-      <div class="note" id="modalNote">When you tap “Allow location”, your browser will show a permission prompt.</div>
+  <!-- Birthday Modal -->
+  <div class="overlay" id="birthdayOverlay" aria-hidden="true" style="display:none">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Set your birthday">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start">
+        <div>
+          <h2>🎂 When's your birthday?</h2>
+          <p>We'll send you a special discount on your special day!</p>
+        </div>
+        <button class="btn" id="btnCloseBirthday" type="button" aria-label="Close">Close</button>
+      </div>
+      <div style="margin-top:12px">
+        <label style="font-size:13px;color:var(--muted)">Birthday (MM/DD)</label>
+        <input type="date" id="birthdayInput" class="input" />
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btnPrimary" id="btnSaveBirthday" type="button">Save</button>
+        <button class="btn" id="btnCancelBirthday" type="button">Cancel</button>
+      </div>
+      <div class="note" id="birthdayNote"></div>
     </div>
   </div>
 
@@ -291,9 +440,13 @@
 
     const STORAGE_CONSENT = "nc.loc.consent";
     const STORAGE_LAST = "nc.loc.last";
+    const STORAGE_BIRTHDAY = "nc.birthday";
 
     const deliverTo = document.getElementById("deliverTo");
     const overlay = document.getElementById("overlay");
+    const birthdayOverlay = document.getElementById("birthdayOverlay");
+    const birthdayBanner = document.getElementById("birthdayBanner");
+    const topbar = document.getElementById("topbar");
 
     const btnOpenLoc = document.getElementById("btnOpenLoc");
     const btnChangeLoc = document.getElementById("btnChangeLoc");
@@ -302,6 +455,13 @@
     const btnNotNow = document.getElementById("btnNotNow");
     const modalNote = document.getElementById("modalNote");
 
+    const btnBirthday = document.getElementById("btnBirthday");
+    const btnCloseBirthday = document.getElementById("btnCloseBirthday");
+    const btnSaveBirthday = document.getElementById("btnSaveBirthday");
+    const btnCancelBirthday = document.getElementById("btnCancelBirthday");
+    const birthdayInput = document.getElementById("birthdayInput");
+    const birthdayNote = document.getElementById("birthdayNote");
+
     function openModal() {
       overlay.style.display = "flex";
       overlay.setAttribute("aria-hidden", "false");
@@ -309,6 +469,16 @@
     function closeModal() {
       overlay.style.display = "none";
       overlay.setAttribute("aria-hidden", "true");
+    }
+    function openBirthdayModal() {
+      birthdayOverlay.style.display = "flex";
+      birthdayOverlay.setAttribute("aria-hidden", "false");
+      const saved = localStorage.getItem(STORAGE_BIRTHDAY);
+      if (saved) birthdayInput.value = saved;
+    }
+    function closeBirthdayModal() {
+      birthdayOverlay.style.display = "none";
+      birthdayOverlay.setAttribute("aria-hidden", "true");
     }
     function shortPlace(lat, lon) {
       return `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
@@ -324,9 +494,7 @@
     }
 
     async function requestAndSendLocation() {
-      // Close immediately after click (as you requested)
       closeModal();
-
       if (!navigator.geolocation) return;
 
       navigator.geolocation.getCurrentPosition(async (pos) => {
@@ -354,7 +522,6 @@
         await postPayload(payload);
         deliverTo.textContent = shortPlace(payload.coords.latitude, payload.coords.longitude);
       }, () => {
-        // If user denies or it fails, reopen the modal
         openModal();
         modalNote.textContent = "Location permission denied or unavailable. Please try again.";
       }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
@@ -371,6 +538,19 @@
       } catch {
         deliverTo.textContent = "Choose";
       }
+
+      // Check birthday
+      const birthday = localStorage.getItem(STORAGE_BIRTHDAY);
+      if (birthday) {
+        const [year, month, day] = birthday.split('-').map(Number);
+        const today = new Date();
+        const todayMonth = today.getMonth() + 1;
+        const todayDay = today.getDate();
+        if (month === todayMonth && day === todayDay) {
+          birthdayBanner.style.display = "block";
+          topbar.style.marginTop = "50px";
+        }
+      }
     }
 
     btnOpenLoc.addEventListener("click", openModal);
@@ -381,6 +561,23 @@
       closeModal();
     });
     btnAllow.addEventListener("click", requestAndSendLocation);
+
+    btnBirthday.addEventListener("click", (e) => {
+      e.preventDefault();
+      openBirthdayModal();
+    });
+    btnCloseBirthday.addEventListener("click", closeBirthdayModal);
+    btnCancelBirthday.addEventListener("click", closeBirthdayModal);
+    btnSaveBirthday.addEventListener("click", () => {
+      const val = birthdayInput.value;
+      if (!val) {
+        birthdayNote.textContent = "Please select a date.";
+        return;
+      }
+      localStorage.setItem(STORAGE_BIRTHDAY, val);
+      birthdayNote.textContent = "Saved! We'll remember your special day.";
+      setTimeout(closeBirthdayModal, 1000);
+    });
 
     hydrateUI();
     if (!localStorage.getItem(STORAGE_CONSENT)) openModal();
