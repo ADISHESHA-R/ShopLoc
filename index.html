@@ -771,7 +771,24 @@
     });
 
     hydrateUI();
-    if (!localStorage.getItem(STORAGE_CONSENT)) openModal();
+    
+    // Show location popup automatically when user first visits the website
+    function showLocationPopupOnLoad() {
+      const consent = localStorage.getItem(STORAGE_CONSENT);
+      // Show popup if user hasn't given consent (or clicked "Not now")
+      if (!consent || consent === 'no') {
+        setTimeout(() => {
+          openModal();
+        }, 500); // Small delay to ensure page is fully rendered
+      }
+    }
+    
+    // Show popup when page loads
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', showLocationPopupOnLoad);
+    } else {
+      showLocationPopupOnLoad();
+    }
   </script>
 </body>
 </html>
