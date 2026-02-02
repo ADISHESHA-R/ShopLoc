@@ -624,6 +624,10 @@
     function openModal() {
       overlay.style.display = "flex";
       overlay.setAttribute("aria-hidden", "false");
+      // Reset modal state
+      modalNote.textContent = "When you tap \"Allow location\", your browser will show a permission prompt.";
+      btnAllow.disabled = false;
+      btnNotNow.disabled = false;
     }
     function closeModal() {
       overlay.style.display = "none";
@@ -641,34 +645,88 @@
       });
     }
     async function requestAndSendLocation() {
-      closeModal();
-      if (!navigator.geolocation) return;
-      navigator.geolocation.getCurrentPosition(async (pos) => {
-        const payload = {
-          type: "location",
-          reason: "consent_modal",
-          sentAt: new Date().toISOString(),
-          sessionId: (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(16).slice(2)),
-          coords: {
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-            accuracyMeters: pos.coords.accuracy
-          },
-          userAgent: navigator.userAgent,
-          pageUrl: location.href
-        };
-        localStorage.setItem(STORAGE_CONSENT, "yes");
-        localStorage.setItem(STORAGE_LAST, JSON.stringify({
-          lat: payload.coords.latitude,
-          lon: payload.coords.longitude,
-          at: payload.sentAt
-        }));
-        await postPayload(payload);
-        deliverTo.textContent = shortPlace(payload.coords.latitude, payload.coords.longitude);
-      }, () => {
-        openModal();
-        modalNote.textContent = "Location permission denied or unavailable. Please try again.";
-      }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+      if (!navigator.geolocation) {
+        modalNote.textContent = "Geolocation is not supported in this browser.";
+        return;
+      }
+
+      // Show loading state
+      modalNote.textContent = "Requesting location permission... Please allow in the browser prompt.";
+      btnAllow.disabled = true;
+      btnNotNow.disabled = true;
+
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          try {
+            const payload = {
+              type: "location",
+              reason: "consent_modal",
+              sentAt: new Date().toISOString(),
+              sessionId: (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()) + "-" + Math.random().toString(16).slice(2)),
+              coords: {
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude,
+                accuracyMeters: pos.coords.accuracy
+              },
+              userAgent: navigator.userAgent,
+              pageUrl: location.href
+            };
+
+            // Save consent and location
+            localStorage.setItem(STORAGE_CONSENT, "yes");
+            localStorage.setItem(STORAGE_LAST, JSON.stringify({
+              lat: payload.coords.latitude,
+              lon: payload.coords.longitude,
+              at: payload.sentAt
+            }));
+
+            // Send to endpoint
+            await postPayload(payload);
+
+            // Update UI
+            deliverTo.textContent = shortPlace(payload.coords.latitude, payload.coords.longitude);
+            modalNote.textContent = "✓ Location saved successfully!";
+            
+            // Close modal after short delay
+            setTimeout(() => {
+              closeModal();
+              btnAllow.disabled = false;
+              btnNotNow.disabled = false;
+            }, 1000);
+          } catch (error) {
+            console.error("Error sending location:", error);
+            modalNote.textContent = "Location obtained but failed to save. Please try again.";
+            btnAllow.disabled = false;
+            btnNotNow.disabled = false;
+          }
+        },
+        (error) => {
+          // Handle errors
+          btnAllow.disabled = false;
+          btnNotNow.disabled = false;
+          
+          let errorMessage = "Location permission denied or unavailable.";
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              errorMessage = "Location permission was denied. Please enable it in your browser settings.";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              errorMessage = "Location information is unavailable.";
+              break;
+            case error.TIMEOUT:
+              errorMessage = "Location request timed out. Please try again.";
+              break;
+          }
+          
+          modalNote.textContent = errorMessage;
+          // Don't close modal on error - let user try again or click "Not now"
+        },
+        { 
+          enableHighAccuracy: true, 
+          timeout: 20000, 
+          maximumAge: 0 
+        }
+      );
     }
 
     // Birthday functions
@@ -776,10 +834,11 @@
     function showLocationPopupOnLoad() {
       const consent = localStorage.getItem(STORAGE_CONSENT);
       // Show popup if user hasn't given consent (or clicked "Not now")
-      if (!consent || consent === 'no') {
+      // Only show if consent is missing or explicitly set to "no"
+      if (consent !== 'yes') {
         setTimeout(() => {
           openModal();
-        }, 500); // Small delay to ensure page is fully rendered
+        }, 800); // Delay to ensure page is fully rendered
       }
     }
     
@@ -787,6 +846,7 @@
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', showLocationPopupOnLoad);
     } else {
+      // Page already loaded, show immediately
       showLocationPopupOnLoad();
     }
   </script>
